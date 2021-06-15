@@ -24,6 +24,7 @@
   color: white;
 }
 
+
 .App-link {
   color: #61dafb;
 }
@@ -35,4 +36,18 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+audio::-webkit-media-controls-panel {
+  color: blue;
+  background-color: 
+  blue;
+  padding: 20px;
+  border: red 1px solid;
+}
+audio::-webkit-media-controls-play-button {
+  color: red;
+}
+.controls {
+  color: #707070 !important;
 }

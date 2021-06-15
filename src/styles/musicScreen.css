@@ -1,0 +1,12 @@
+.playIcon {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  align-self: center;
+  
+}
+.pauseIcon {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
