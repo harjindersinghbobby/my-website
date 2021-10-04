@@ -1,113 +1,161 @@
-import React from 'react';
-import './App.css';
-import ReactAudioPlayer from 'react-audio-player';
-import firebase from './firebase/firebaseConfig';
-import '@firebase/storage';
-import playIcon from './images/playIcon.png';
-import pauseIcon from './images/pauseIcon.webp';
-import CustomAudioPlayer from './audioPlayer/demo/src/index';
-import downloadIcon from './images/download.png';
-import dp1 from './images/gurpreetji.png';
-import dp2 from './images/dp2.jpg';
-import dp3 from './images/dp3.jpg';
-import dp4 from './images/dp3.jpg';
+import React from "react";
+import "./App.css";
+import firebase from "./firebase/firebaseConfig";
+import "@firebase/storage";
+import playIcon from "./images/playIcon.png";
+import pauseIcon from "./images/pauseIcon.webp";
+import downloadIcon from "./images/download.png";
+import dp1 from "./images/gurpreetji.png";
+import dp2 from "./images/dp2.jpg";
+import dp3 from "./images/dp3.jpg";
+import dp4 from "./images/dp3.jpg";
 
-import dp5 from './images/dp4.jpg';
-import dp6 from './images/dp5.jpg';
-import dp7 from './images/dp6.jpg';
-import khanda from './images/khanda.jpg';
-import menu from './images/menu.png';
+import dp5 from "./images/dp4.jpg";
+import dp6 from "./images/dp5.jpg";
+import dp7 from "./images/dp6.jpg";
+import pothiImage from "./images/gutka.png";
 
+import gurpreetSinghPlaylist from "./images/playListGurpreetSingh.jpg";
+import playlistManpreet from "./images/playlistManpreet.jpeg";
+import Playlist from "./screens/playlist";
+import joginder from "./images/joginder.jpeg";
 
+import khanda from "./images/khanda.jpg";
 
+import menu from "./images/menu.png";
 
+import "./styles/musicScreen.css";
+import { getGurbani, UpdateGurbani } from "./MusicListData/musicListData.js";
+import { StylesMedia } from "./styles/styles";
 
-import './styles/musicScreen.css';
+import AudioPlayer from "./audioPlayer/src/index";
+import {hocComponent} from './commonComponents/hoc'
+
 
 let intenetConnected = true;
 
 let url =
-  'https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2FBhajMannMereEkoNaam.mp3?alt=media&token=49f1ddbd-0357-4664-aa98-a0173c641a58';
+  "https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2FBhajMannMereEkoNaam.mp3?alt=media&token=49f1ddbd-0357-4664-aa98-a0173c641a58";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.refss = React.createRef();
+
+    this.wrapperRef = React.createRef();
     this.state = {
+      selectedRagiAllGurbani:
+        getGurbani().GurubaniMusic[0]["GurupreetSinghRinku"],
+      onToggleTrackPlayPause: false,
+      currentIndex: 0,
+      progress: 0,
+      CurrentRagiName: "GurupreetSinghRinku",
+      itemNo: 0,
+      isPlaying: false,
+      onPageLoad: true,
+      displayPlaylist: true,
       play: false,
       realData: {},
       gurubaniList: [],
-      url: 'https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2FBhajMannMereEkoNaam.mp3?alt=media&token=49f1ddbd-0357-4664-aa98-a0173c641a58',
+      url: "https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2FBhajMannMereEkoNaam.mp3?alt=media&token=49f1ddbd-0357-4664-aa98-a0173c641a58",
     };
   }
 
-  onclickPlayPauseBtn = async (e, itemNo, url, i, ragiName, name) => {
+  OnToggleAudioPlayPause = (itemNo, url, ragiName, name, indx) => {};
 
-    let childElement = (document.getElementById(name).children)[0].children;
+fast = () => {
+  
+}
+
+
+  onclickPlayPauseBtn = async (
+    itemNo,
+    url,
+    ragiName,
+    name,
+    indx,
+    onToggleTrackPlayPause
+  ) => {
+    console.log(name, "name");
+    let childElement = document.getElementById(name).children[0].children;
     // let childElement = child.children;
-    console.log(childElement, 'childElement');
 
-    if (childElement[1].src.includes('playIcon')) {
-      await this.state.realData.GurubaniMusic.map((item, ind) => {
+    if (childElement[1].src.includes("playIcon")) {
+      this.setState({
+        isPlaying: true,
+        onPageLoad: false,
+        currentIndex: indx,
+        onToggleTrackPlayPause:
+          this.state.currentIndex == indx ? true : onToggleTrackPlayPause,
+      });
+
+      let data = getGurbani();
+      await data.GurubaniMusic.map((item, ind) => {
         if (item.visible == true) {
-          return item[item['RagiName']].map((eachGurubani, index) => {
-            console.log(item.itemNo + ' itemNo.itemNo');
-            console.log(itemNo + ' itemNo');
+          return item[item["RagiName"]].map((eachGurubani, index) => {
+            console.log(item.itemNo + " item.itemNo " + itemNo + " itemNo");
+            console.log(
+              eachGurubani.GurubaniNo +
+                " eachGurubani.GurubaniNo " +
+                indx +
+                " indx"
+            );
 
-            console.log(eachGurubani.GurubaniNo + '  eachGurubani.GurubaniNo');
-            console.log(i + ' i');
-
-            if (item.itemNo == itemNo && eachGurubani.GurubaniNo == i) {
-              eachGurubani.iconToDisplay = 'pause';
+            if (item.itemNo == itemNo && eachGurubani.GurubaniNo == indx) {
+              eachGurubani.iconToDisplay = "pause";
             } else {
-              eachGurubani.iconToDisplay = 'play';
+              eachGurubani.iconToDisplay = "play";
             }
           });
         }
       });
-      await this.RenderPlayList(this.state.realData);
-      await this.setState(
-        {
-          url: url,
-        },
-        () => {
-          document.getElementById('my-audio').load();
-          document.getElementById('my-audio').play();
-        }
-      );
+
+      // data.GurubaniMusic[itemNo][ragiName][indx].iconToDisplay = 'pause';
+
+      await this.RenderPlayList(data);
+
+      // await this.setState(
+      //   {
+      //     currentRagi : '',
+      //     url: url,
+      //   },
+      //   () => {
+      //     document.getElementById("my-audio").load();
+      //     document.getElementById("my-audio").play();
+      //   }
+      // );
 
       // realData.GurubaniMusic[itemNo][ragiName][i].iconToDisplay = 'pause';
-
-      console.log(this.state.realData);
     } else {
-      await this.state.realData.GurubaniMusic.map((item, ind) => {
-        if (item.visible == true) {
-          return item[item['RagiName']].map((eachGurubani, index) => {
-            console.log(item.itemNo + ' itemNo.itemNo');
-            console.log(itemNo + ' itemNo');
-
-            console.log(eachGurubani.GurubaniNo + '  eachGurubani.GurubaniNo');
-            console.log(i + ' i');
-
-            if (item.itemNo == itemNo && eachGurubani.GurubaniNo == i) {
-              eachGurubani.iconToDisplay = 'play';
-            } else {
-              // eachGurubani.iconToDisplay = 'pause';
-            }
-          });
-        }
+      this.setState({
+        isPlaying: false,
+        onPageLoad: false,
+        currentIndex: indx,
+        // progress: onToggleTrackPlayPause == false ? 0 :prog,
+        onToggleTrackPlayPause: true,
       });
-      await this.RenderPlayList(this.state.realData);
-      await this.setState(
-        {
-          url: url,
-        },
-        () => {
-          // document.getElementById('my-audio').setAttribute('src', url);
+      let data = getGurbani();
+      data.GurubaniMusic[itemNo][ragiName][indx].iconToDisplay = "play";
 
-          document.getElementById('my-audio').load();
-          document.getElementById('my-audio').pause();
-        }
-      );
+      // await this.state.realData.GurubaniMusic.map((item, ind) => {
+      //   if (item.visible == true) {
+      //     return item[item["RagiName"]].map((eachGurubani, index) => {
+      //       console.log(item.itemNo + " itemNo.itemNo");
+      //       console.log(itemNo + " itemNo");
+
+      //       console.log(eachGurubani.GurubaniNo + "  eachGurubani.GurubaniNo");
+      //       console.log(i + " i");
+
+      //       if (item.itemNo == itemNo && eachGurubani.GurubaniNo == i) {
+      //         eachGurubani.iconToDisplay = "play";
+      //       } else {
+      //         // eachGurubani.iconToDisplay = 'pause';
+      //       }
+      //     });
+      //   }
+      // });
+
+      await this.RenderPlayList(data);
     }
 
     // var newURL =
@@ -116,22 +164,22 @@ class App extends React.Component {
 
   onMouseEnter = (name) => {
     let ele = document.getElementById(name);
-    ele.style.backgroundColor = 'white';
+    ele.style.backgroundColor = "white";
   };
 
   onMouseLeave = (name) => {
     let ele = document.getElementById(name);
-    ele.style.backgroundColor = '#e8edf2';
+    ele.style.backgroundColor = "#e8edf2";
   };
   RenderPlayList = async (dataMap) => {
     await this.setState({
       gurubaniList: [],
     });
     var i = -1;
-    await dataMap['GurubaniMusic'].map((item, index) => {
+    await dataMap["GurubaniMusic"].map((item, index) => {
       if (item.visible == true) {
-        return item[item['RagiName']].map((eachGurubani, inx) => {
-          i = i+1;
+        return item[item["RagiName"]].map((eachGurubani, indx) => {
+          i = i + 1;
           this.addEachGurbani(
             item.itemNo,
             eachGurubani.name,
@@ -139,135 +187,28 @@ class App extends React.Component {
             i,
             item.RagiName,
             eachGurubani.iconToDisplay,
-            eachGurubani.totalTime
+            eachGurubani.totalTime,
+            indx
           );
         });
       }
-      console.log(this.state.gurubaniList);
     });
   };
 
   initialLoadPlaylist = () => {
     // let ref = firebase.database().ref('/');
     // ref.once('value', (snapshot) => {
-    const data = {
-      GurubaniMusic: [
-        {
-          itemNo: 0,
-          visible: true,
-          RagiName: 'GurupreetSinghRinku',
-          GurupreetSinghRinku: [
-            {
-              totalTime: '10:12',
-              GurubaniNo: 0,
-              iconToDisplay: 'play',
-              playing: false,
-              name: 'Mool Mantar',
-              url: 'https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2Fmool.mp3?alt=media&token=ef11570a-42d4-405c-967d-fd7ba4b9c939',
-            },
-            
-            {
-              totalTime: '01:10:12',
-              GurubaniNo: 1,
-              iconToDisplay: 'play',
-              playing: false,
-              name: 'Maan Mere Eko Naam dihaye',
-              url: 'https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2FBhajMannMereEkoNaam.mp3?alt=media&token=49f1ddbd-0357-4664-aa98-a0173c641a58',
-            },
-            {
-              totalTime: '16:12',
-              GurubaniNo: 2,
-              iconToDisplay: 'play',
-              playing: false,
-              name: 'nanak nam chardika',
-              url: 'https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2FBhajMannMereEkoNaam.mp3?alt=media&token=49f1ddbd-0357-4664-aa98-a0173c641a58',
-            },
-            {
-              totalTime: '50:12',
-              GurubaniNo: 3,
-              iconToDisplay: 'play',
-              playing: false,
-              name: 'Gur Gobind nam mile to jive',
-              url: 'https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2FBhajMannMereEkoNaam.mp3?alt=media&token=49f1ddbd-0357-4664-aa98-a0173c641a58',
-            },
-            {
-              totalTime: '49:12',
-              GurubaniNo: 4,
-              iconToDisplay: 'play',
-              playing: false,
-              name: 'Baba nanak mile to jive',
-              url: 'https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2FBhajMannMereEkoNaam.mp3?alt=media&token=49f1ddbd-0357-4664-aa98-a0173c641a58',
-            },
-            {
-              totalTime: '10:12',
-              GurubaniNo: 5,
-              iconToDisplay: 'play',
-              playing: false,
-              name: 'Mool Mantar 1',
-              url: 'https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2Fmool.mp3?alt=media&token=ef11570a-42d4-405c-967d-fd7ba4b9c939',
-            },
-            
-            {
-              totalTime: '01:10:12',
-              GurubaniNo: 6,
-              iconToDisplay: 'play',
-              playing: false,
-              name: 'Maan Mere Eko Naam dihaye 1',
-              url: 'https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2FBhajMannMereEkoNaam.mp3?alt=media&token=49f1ddbd-0357-4664-aa98-a0173c641a58',
-            },
-            {
-              totalTime: '16:12',
-              GurubaniNo: 7,
-              iconToDisplay: 'play',
-              playing: false,
-              name: 'nanak nam chardika 1',
-              url: 'https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2FBhajMannMereEkoNaam.mp3?alt=media&token=49f1ddbd-0357-4664-aa98-a0173c641a58',
-            },
-            {
-              totalTime: '50:12',
-              GurubaniNo: 8,
-              iconToDisplay: 'play',
-              playing: false,
-              name: 'Gur Gobind nam mile to jive1',
-              url: 'https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2FBhajMannMereEkoNaam.mp3?alt=media&token=49f1ddbd-0357-4664-aa98-a0173c641a58',
-            },
-            {
-              totalTime: '49:12',
-              GurubaniNo: 9,
-              iconToDisplay: 'play',
-              playing: false,
-              name: 'Baba nanak mile to jive 1',
-              url: 'https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2FBhajMannMereEkoNaam.mp3?alt=media&token=49f1ddbd-0357-4664-aa98-a0173c641a58',
-            },
-            
-          ],
-        },
-        {
-          itemNo: 1,
-          visible: true,
-          RagiName: 'ChamanjeetSingh',
 
-          ChamanjeetSingh: [
-            {
-              totalTime: '19:12',
+    // localStorage.setItem("realData",JSON.stringify(DATA));
 
-              GurubaniNo: 0,
-              iconToDisplay: 'play',
-              playing: false,
-              name: 'Ek onkar',
-
-              url: 'https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2Fmool.mp3?alt=media&token=ef11570a-42d4-405c-967d-fd7ba4b9c939',
-            },
-          ],
-        },
-      ],
-    };
     this.setState(
       {
-        realData: data,
+        onPageLoad: true,
+        realData: getGurbani(),
       },
       () => {
-        this.RenderPlayList(data);
+        let gurbani = getGurbani();
+        this.RenderPlayList(gurbani);
       }
     );
     // const state = snapshot.val()['GurubaniMusic'];
@@ -278,126 +219,190 @@ class App extends React.Component {
   };
 
   async componentDidMount() {
-
     await this.initialLoadPlaylist();
-   await this.checkInternet();
+    // await this.checkInternet();
 
-
-
-
+    // document.addEventListener('click', this.handleClickOutside);
   }
-  checkInternet = () => {
-  
-setInterval(function(){ 
-  var ifConnected = window.navigator.onLine;
-    if (ifConnected) {
-      intenetConnected = ifConnected;
-      document.getElementById("checkOnline").innerHTML = "Online";
-      document.getElementById("checkOnline").style.color = "green";
-    } else {
-      intenetConnected = ifConnected;
 
-      document.getElementById("checkOnline").innerHTML = "Offline";
-      document.getElementById("checkOnline").style.color = "red";
+  OnclickEachPlaylist = async (RagiName, itemNo) => {
+    const { CurrentRagiName } = this.state;
+    // if(RagiName != CurrentRagiName ) {
+
+    await UpdateGurbani(RagiName);
+    let newdatas = await getGurbani();
+    this.RenderPlayList(newdatas);
+
+    this.setState({
+      displayPlaylist: false,
+      itemNo: itemNo,
+      CurrentRagiName: RagiName,
+      currentIndex: 0,
+      isPlaying: false,
+      onToggleTrackPlayPause: false,
+      selectedRagiAllGurbani: newdatas.GurubaniMusic[itemNo][RagiName],
+    });
+
+    // }
+  };
+
+  onClickMenu = async () => {
+    let newdatas = await getGurbani();
+    console.log(newdatas, "newdatas");
+    this.RenderPlayList(newdatas);
+
+    this.setState({
+      displayPlaylist: true,
+    });
+  };
+
+  handleClickOutside = async (e) => {
+    e.stopPropagation();
+    if (e.target === e.currentTarget) {
+      this.setState({
+        displayPlaylist: false,
+      });
     }
- }, 3000);
 
-//  clearInterval();
-  }
-  addEachGurbani = async (itemNo, name, url, i, ragiName, iconToDisplay,totalTime) => {
-    let array = [dp1,dp2,dp3,dp4,dp5,dp6,dp7]
+    // }
+  };
+
+
+  addEachGurbani = async (
+    itemNo,
+    name,
+    url,
+    i,
+    ragiName,
+    iconToDisplay,
+    totalTime,
+    indx
+  ) => {
+    let array = [dp1, dp2, dp3, dp4, dp5, dp6, dp7];
     // let tempData = this.state.realData;
     let view = await (
       <div
         onMouseEnter={() => this.onMouseEnter(name)}
         onMouseLeave={() => this.onMouseLeave(name)}
         style={{
-          cursor:'pointer',
+          cursor: "pointer",
           // marginBottom: 1,
-          padding:10,
-          backgroundColor: '#e8edf2',
-          borderBottomColor: 'blue',
-          borderColor : 'grey',
+          padding: 10,
+          backgroundColor: "#e8edf2",
+          borderBottomColor: "blue",
+          borderColor: "grey",
           borderWidth: 0,
           borderBottomWidth: 1,
-          borderStyle: 'solid',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          display: 'flex', flexDirection: 'row',
-          
-          
+          borderStyle: "solid",
+          justifyContent: "space-between",
+          alignItems: "center",
+          display: "flex",
+          flexDirection: "row",
         }}
         id={name}
         onClick={(addEventListener) =>
           this.onclickPlayPauseBtn(
-            addEventListener,
             itemNo,
             url,
-            i,
             ragiName,
-            name
+            name,
+            indx,
+
+            false
           )
         }
         key={name}
       >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <p
+            style={{
+              margin: 0,
+              width: 10,
 
+              marginRight: 10,
+              textAlign: "center",
+            }}
+          >
+            {i + 1}
+          </p>
+          <img
+            style={
+              window.innerWidth >= 768
+                ? { marginRight: 50 }
+                : { marginRight: 10 }
+            }
+            className="playIcon"
+            src={iconToDisplay == "play" ? playIcon : pauseIcon}
+          ></img>
 
-<div style={{display: 'flex', flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+          <img
+            style={{ marginRight: 10, borderRadius: 20 }}
+            className="playIcon"
+            src={i < 7 ? array[i] : dp1}
+          ></img>
 
-  
-<p style={{
-  margin:0,
-width:10,
-
-marginRight: 10,           textAlign: 'center'}}>{i+1}</p>
-        <img
-        style={{marginRight: 50,}}
-          className='playIcon'
-          src={iconToDisplay == 'play' ? playIcon : pauseIcon}
-        ></img>
-
-<img
-        style={{marginRight: 10, borderRadius: 20}}
-
-          className='playIcon'
-          src={i <7 ?array[i] : dp1}
-        ></img>
-       
-
-        <p style={{
-          width: 200,
-          margin:0,
-          alignSelf:'center',
-          fontSize: 12,
-
-           textAlign: 'left'}}>{name}</p>
-            </div>
-
-            <div style={{display: 'flex', flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
-           <p style={{
-                
-                  margin:0,
-                  fontSize: 10,
-           textAlign: 'center'}}>{ragiName}</p>
-           
-           <img
-          className='playIcon'
-          src={downloadIcon}
-        ></img>
-           </div>
-           <div style={{display: 'flex', flexDirection:'row', width:50}}>
-           <p style={{
-                  margin:0,
-                  fontSize: 10,
-           textAlign: 'center'}}>{totalTime}</p>
-           
-           {/* <img
-          className='playIcon'
-          src={downloadIcon}
-        ></img> */}
-           </div>
-          
+          <p
+            style={{
+              margin: 0,
+              alignSelf: "center",
+              fontSize: 12,
+              width: window.innerWidth <= 768 ? 110 : 200,
+              textAlign: "left",
+            }}
+          >
+            {name}
+          </p>
         </div>
+        {window.innerWidth >= 768 && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <p
+              style={{
+                margin: 0,
+                fontSize: 10,
+                textAlign: "center",
+              }}
+            >
+              {ragiName}
+            </p>
+
+            {/* <img className="playIcon" src={downloadIcon}></img> */}
+          </div>
+        )}
+        <div
+          style={{
+            paddingRight: 5,
+            paddingLeft: 5,
+            display: "flex",
+            flexDirection: "row",
+            width: 30,
+            justifyContent: "flex-start",
+          }}
+        >
+          <p
+            style={{
+              margin: 0,
+              fontSize: 10,
+              textAlign: "left",
+            }}
+          >
+            {totalTime}
+          </p>
+        </div>
+      </div>
     );
 
     await this.setState({
@@ -405,155 +410,337 @@ marginRight: 10,           textAlign: 'center'}}>{i+1}</p>
     });
   };
   onclickDownloadBtn = () => {
+  
+    var url =
+      "https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2FBhajMannMereEkoNaam.mp3?alt=media&token=49f1ddbd-0357-4664-aa98-a0173c641a58";
+    fetch(url, {
+      mode: "no-cors",
+      header: {
+        "Access-Control-Allow-Origin": "*",
+      },
+    }).then((response) => console.log(response));
+  };
 
-   var  url ='https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2FBhajMannMereEkoNaam.mp3?alt=media&token=49f1ddbd-0357-4664-aa98-a0173c641a58';
-   fetch(url,
-   { mode: 'no-cors',
-    header: {
-      'Access-Control-Allow-Origin':'*',
-    }}
-    )
-   .then( response => console.log(response))
-   
-  }
 
   render() {
+    // style={[styles.chatcontainer, styles[resChatcontainer]]
+    const mainDiv = `mainDiv_${this.props.measure}`;
     return (
-      intenetConnected == true &&
-      this.state.gurubaniList.length != 0 ? (
-        <div
-          style={{
-            justifyContent: 'center',alignItems: 'center',
-            // backgroundColor: 'skyBlue',
-            display: 'flex',
-            flexDirection: 'column'
-          }}
-        >
-          <div>
-            <button onClick={()=> this.onclickDownloadBtn()}>
-Download
-            </button>
-          </div>
-      <div style={{display:'none'}}>
-            <p  id="checkOnline"></p>
-      </div>
-
-          <div style={{width: '103%',height:60,
-           justifyContent:'space-between', alignItems:'center',
-          display:'flex',flexDirection:'row',backgroundColor:'white'}}>
-            <div style={{display:'flex',flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
-
-         
-            <img
-        style={{marginRight: 10, marginLeft: 10, borderRadius: 20,height:30,width:30}}
-
-          // className='playIcon'
-          src={khanda}
-        ></img>
-            <h3>
-              MP3 Gurbani
-            </h3>
+      <div
+        style={styles.main}
+      >
+        {this.state.displayPlaylist == true && window.innerWidth <= 768 && (
+          <div onClick={this.handleClickOutside} className="modal">
+            <div onClick={this.handleClickInside} className="modalContent">
+              <Playlist OnclickEachPlaylist={this.OnclickEachPlaylist} />
             </div>
-            {/* <img
-        style={{marginRight: 10,height:40,width:35}}
-
-          // className='playIcon'
-          src={menu}
-        ></img> */}
-          <select style={{backgroundColor:'#3fb7f5', width: 200, height:30}} name="cars" id="cars">
-          <option disabled selected value="volvo">Select Gurbani</option>
-    <option value="volvo">Gurpreet Singh Rinku</option>
-    <option value="saab">Chamanjeet Singh</option>
-    <option value="opel">Paramdeep Singh</option>
-  </select>
           </div>
-     
-          
-          {/* <ReactAudioPlayer
-          style={{ color: 'red' }}
-          src='https://firebasestorage.googleapis.com/v0/b/my-website-fee43.appspot.com/o/GurubaniMusic%2FBhajMannMereEkoNaam.mp3?alt=media&token=49f1ddbd-0357-4664-aa98-a0173c641a58'
-          autoPlay
-          controls
-        /> */}
-   
-          
-        <div style ={{alignSelf : 'center', width: '60%'}}>
-
+        )}
 
         <div
-
-style={{
- 
-  marginBottom: 0,
-  padding:10,
-  backgroundColor: '#e8edf2',
-  borderColor: 'white',
-  borderWidth: 1,
-  borderStyle: 'solid',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  display: 'flex', flexDirection: 'row',
-  
-  
-}}
-
->
-
-
-
-
-<div style={{display:'flex',flexDirection:'row'}}>
-
-<p style={{
-      fontWeight: 'bold',
-      textAlign: 'center',
-  margin:0,
- 
-  alignSelf: 'left',
-  }}>{'#'}</p>
- 
-    <p style={{
-      fontWeight: 'bold',
-      textAlign: 'center',
-  margin:0,
-  width: 200,
-  alignSelf: 'left',
-  }}>{'Title'}</p>
-  </div>
-    <p style={{
-  margin:0,
-  textAlign: 'left',
-
-  fontWeight: 'bold',
-  }}>{'Time'}</p>
-
- 
-
-  
-</div>
-
+          style={styles.HeaderDiv}
+        >
+          <div
+            style={styles.headerDivChild}
+          >
+            <img
+              style={styles.imageKhanda}
+              // className='playIcon'
+              src={khanda}
+            ></img>
+            <h3>MP3 Gurbani {window.innerWidth}</h3>
+          </div>
+          <img
+            onClick={this.onClickMenu}
+            style={styles.menuImage}
+            // className='playIcon'
+            src={menu}
+          ></img>
         </div>
-  <div style ={{alignSelf : 'center', width: '60%', height: 400}}>{this.state.gurubaniList}</div>
-          {!intenetConnected && <p>INTERNET OFF</p>}
-          {/* <div style={{ bottom: 0, position: 'fixed', width: '100%', backgroundColor: 'white' }}>
-            <audio
-              id='my-audio'
-              style={{backgroundColor:'blue'}}
-              controls
+
+        <div
+          style={
+            window.innerWidth >= 768
+              ? styles.listSubheadingWeb 
+              : styles.listSubheadingMobile
+          }
+        >
+          <div
+            style={styles.listSubheadingChildDiv}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+              }}
             >
-              <source src={this.state.url} />
-            </audio>
-          </div> */}
-          <div style={{ bottom: 0, position: 'fixed', width: '100%', backgroundColor: 'white' }}>
-            <CustomAudioPlayer/>
+              <p
+                style={{
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  margin: 0,
+
+                  alignSelf: "left",
+                }}
+              >
+                {"#"}
+              </p>
+
+              <p
+                style={{
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  margin: 0,
+                  width: 200,
+                  alignSelf: "left",
+                }}
+              >
+                {"Title"}
+              </p>
+            </div>
+            <p
+              style={{
+                margin: 0,
+                // textAlign: "left",
+
+                fontWeight: "bold",
+              }}
+            >
+              {"Time"}
+            </p>
+          </div>
+        </div>
+        <div
+          style={styles.gurbaniListandPlayListMainDiv}
+        >
+          <div
+            style={styles.gurbaniListMainDiv}
+          >
+            {this.state.gurubaniList}
           </div>
 
+
+          <div
+            style={styles.PlaylistMainDiv}
+          >
+            {window.innerWidth > 900 && (
+              <div
+                style={styles.PlaylistMainDivChild}
+              >
+            
+                <div
+                  style={styles.PlaylistInnerBoxDiv}
+                >
+                  <p>Playlist</p>
+                </div>
+                <div
+                  onClick={() => this.OnclickEachPlaylist("ChamanjeetSingh", 1)}
+                  className="box"
+                >
+                  <label>ChamanjeetSingh</label>
+                  <label style={{fontSize:10, fontWeight:350}}>
+              (100 Gurbani)
+            </label>
+                  <img
+                    style={styles.playlistImage}
+                    // className='playIcon'
+                    src={pothiImage}
+                  ></img>
+                </div>
+                <div
+                  onClick={() =>
+                    this.OnclickEachPlaylist("GurupreetSinghRinku", 0)
+                  }
+                  className="box"
+                >
+                  <label>Gurpreet Singh</label>
+                  <label style={{fontSize:10, fontWeight:350}}>
+              (100 Gurbani)
+            </label>
+                  <img
+                     style={styles.playlistImage}
+                    // className='playIcon'
+                    src={gurpreetSinghPlaylist}
+                  ></img>
+                </div>
+                <div
+                  onClick={() => this.OnclickEachPlaylist("ManpreetSingh", 2)}
+                  className="box"
+                >
+                  <label>Manpreet Singh</label>
+                  <label style={{fontSize:10, fontWeight:350}}>
+              (100 Gurbani)
+            </label>
+                  
+                  <img
+                      style={styles.playlistImage}
+                    // className='playIcon'
+                    src={playlistManpreet}
+                  ></img>
+                </div>
+                <div
+                  onClick={() => this.OnclickEachPlaylist("Nitname", 3)}
+                  className="box"
+                >
+                  <label>Nitname</label>
+                  <label style={{fontSize:10, fontWeight:350}}>
+              (100 Gurbani)
+            </label>
+                  <img
+                      style={styles.playlistImage}
+                    // className='playIcon'
+                    src={pothiImage}
+                  ></img>
+                </div>
+              </div>
+            )}
+
+            {window.innerWidth >= 768 ? (
+              <div
+                style={styles.AudioMainDivWeb}
+              >
+                <AudioPlayer
+                  onToggleTrackPlayPause={this.state.onToggleTrackPlayPause}
+                  renderPlayList={this.RenderPlayList}
+                  currentIndex={this.state.currentIndex}
+                  OnToggleAudioPlayPause={this.onclickPlayPauseBtn}
+                  CurrentRagiName={this.state.CurrentRagiName}
+                  itemNo={this.state.itemNo}
+                  onPageLoad={this.state.onPageLoad}
+                  isPlaying={this.state.isPlaying}
+                  ref={this.refss}
+                  songs={
+                    getGurbani().GurubaniMusic[this.state.itemNo][
+                      this.state.CurrentRagiName
+                    ]
+                  }
+                />
+              </div>
+            ) : (
+              <div
+                style={styles.AudioMainDivMobile}
+              >
+           
+                <AudioPlayer
+                  onToggleTrackPlayPause={this.state.onToggleTrackPlayPause}
+                  renderPlayList={this.RenderPlayList}
+                  currentIndex={this.state.currentIndex}
+                  OnToggleAudioPlayPause={this.onclickPlayPauseBtn}
+                  CurrentRagiName={this.state.CurrentRagiName}
+                  itemNo={this.state.itemNo}
+                  onPageLoad={this.state.onPageLoad}
+                  isPlaying={this.state.isPlaying}
+                  ref={this.refss}
+                  songs={this.state.selectedRagiAllGurbani}
+                />
+              </div>
+            )}
+          </div>
         </div>
-      ) : <div>
-            <p  id="checkOnline"></p>
       </div>
     );
   }
 }
 
-export default App;
+const styles = {
+  main: StylesMedia('main'),
+  
+ 
+  HeaderDiv: {
+    width: "100%",
+    height: 60,
+    justifyContent: "space-between",
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "row",
+    backgroundColor: "white",
+  },
+
+  headerDivChild:{
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageKhanda : {
+    marginRight: 10,
+    marginLeft: 10,
+    borderRadius: 20,
+    height: 30,
+    width: 30,
+  },
+  menuImage : { marginRight: 10, height: 40, width: 35 },
+
+  gurbaniListandPlayListMainDiv : {
+    display: "flex",
+    flexDirection: window.innerWidth > 950 ? "row" : "column",
+    width: "100%",
+    height: "100%",
+    alignItems: "flex-start",
+    justifyContent: "space-around",
+    position: "relative",
+  },
+  gurbaniListMainDiv :{
+    overflowY: "none",
+    alignSelf: "left",
+    width: window.innerWidth >= 950 ? "54%" : "100%",
+    paddingBottom: 140,
+    // maxHeight: 540,
+  },
+  PlaylistMainDiv: {
+    width:  window.innerWidth >= 950 ? "40%" : "100%",
+    position: "sticky",
+  },
+  PlaylistMainDivChild : {
+    flexWrap: "wrap",
+    display: "flex",
+    width: "100%",
+    height: "100%",
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "white",
+    padding: 10,
+  },
+  PlaylistInnerBoxDiv :{
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+  },
+  playlistImage : {
+    borderRadius: 20,
+    height: 70,
+    width: 70,
+  },
+  AudioMainDivWeb:{
+    marginTop: 10,
+    alignSelf: "center",
+    display: "flex",
+    justifyContent: "center",
+  },
+  AudioMainDivMobile : {
+    width: "96%",
+    position: "fixed",
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+  },
+
+  listSubheadingWeb : { alignSelf: "left", width: "54%", marginLeft: 18 },
+  listSubheadingMobile :{ alignSelf: "left", width: "100%" },
+  listSubheadingChildDiv : {
+    overflow: "hidden",
+    marginBottom: 0,
+    padding: 10,
+    backgroundColor: "#e8edf2",
+    borderColor: "white",
+    borderWidth: 1,
+    borderStyle: "solid",
+    justifyContent: "space-between",
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "row",
+  },
+
+};
+export default hocComponent(App);

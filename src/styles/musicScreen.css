@@ -10,3 +10,41 @@
   height: 30px;
   cursor: pointer;
 }
+
+.box{
+  cursor: pointer;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 20px;
+  background-color: white;
+  z-index: inherit;
+  width: 40%;
+  height: 110px;
+  box-shadow: 1px 2px 5px -2px rgba(0,0,0,0.75);
+  -webkit-box-shadow: 1px 2px 5px -2px rgba(0,0,0,0.75);
+  -moz-box-shadow: 1px 2px 5px -2px rgba(0,0,0,0.75);
+}
+
+.modal {
+  
+  left: 0;
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.25);
+  
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.modalContent{
+  
+  background-color: white;
+  /* position: absolute; */
+  z-index: inherit;
+}

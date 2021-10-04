@@ -4,7 +4,7 @@
   }
   .player-container {
     padding: 10px;
-    width: 435px;
+    /* width: 435px; */
     margin: 0 auto;
     overflow: hidden;
     background-color: white;
@@ -63,7 +63,7 @@
     height: 15px;
     border-radius: 50%;
     background-color:rgb(53, 176, 225);
-    box-shadow: rgba(0, 0, 0, 0.2) 0 0 5px 2px;
+    box-shadow: rgba(252, 218, 218, 0.2) 0 0 5px 2px;
   }
   .player-options {
     display: flex;
