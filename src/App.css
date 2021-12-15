@@ -79,4 +79,58 @@ audio::-webkit-media-controls-play-button {
   background: #b30000; 
 }
 
+/* mobile-tablet-laptop-tv size*/
+@media (min-width: 300px) and (max-width: 3000px) {
+.audioMainDiv{
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+ 
+  }
+  /* tablet-latop size */
+  @media (min-width: 600px) and (max-width: 1800px) {
+  }
+  /* laptop screen size */
+  @media (min-width: 1025px) and (max-width: 1800) {
+  }
+
+ /* big size laptop */
+  @media (min-width: 1400px) and (max-width: 1800) {
+}
+  /* medium size laptop */
+  @media (min-width: 1200px) and (max-width: 1400) {
+}
+ /* small size laptop */
+  @media (min-width: 1025px) and (max-width: 1200px) {
+  }
+  
+  /* mobile-tablet screen size*/
+  @media (min-width: 320px) and (max-width: 1024px) {
+  }
+  
+  /* tablet screen size */
+  @media (min-width: 600px) and (max-width: 1024px) {
+  }
+    /* big tablet screen size */
+  @media (min-width: 801px) and (max-width: 1024px) {
+  }
+
+   /* small tablet screen size */
+  @media (min-width: 601px) and (max-width: 800px) {
+  }
+
+  /* mobile screen size */
+  @media (min-width: 320px) and (max-width: 600px) {
+
+  }
+
+  /* medium size mobile */
+  @media (min-width: 481px) and (max-width: 600px) {
+  }
+
+  /* small size mobile */
+  @media (min-width: 320px) and (max-width: 480px) {
+  }
+
 

@@ -1,0 +1,83 @@
+
+  /* mobile-tablet-laptop-tv size*/
+  @media (min-width: 300px) and (max-width: 3000px) {
+    .headerContainer{
+        width: 100%;
+        background-color:white;
+        height: 70px;
+        justify-content:space-between;
+        align-content: center;
+        align-items:center;
+        display: flex;
+        flex-direction: row;
+    }
+    .logoHeaderDiv{
+        padding: 10px;
+        width: 300px;
+        justify-content:flex-start;
+        align-content:center;
+        align-items:center;
+        display: flex;
+    }
+    .khandaLogoHeaderImage{
+        height:55px;
+        width:55px;
+    
+    }
+    .HeaderGurbaniText{
+        margin: 0px;
+        margin-left: 10px;
+        font-size:28px;
+        font-weight: bold;
+        color:#61dafb;
+    }
+    .menu{
+        height:45px;
+        width:35px;
+        margin-right: 10px;
+    }
+  }
+  /* tablet-latop size */
+  @media (min-width: 600px) and (max-width: 1800px) {
+  }
+  /* laptop screen size */
+  @media (min-width: 1025px) and (max-width: 1800) {
+  }
+
+ /* big size laptop */
+  @media (min-width: 1400px) and (max-width: 1800) {
+}
+  /* medium size laptop */
+  @media (min-width: 1200px) and (max-width: 1400) {
+}
+ /* small size laptop */
+  @media (min-width: 1025px) and (max-width: 1200px) {
+  }
+  
+  /* mobile-tablet screen size*/
+  @media (min-width: 320px) and (max-width: 1024px) {
+  }
+  
+  /* tablet screen size */
+  @media (min-width: 600px) and (max-width: 1024px) {
+  }
+    /* big tablet screen size */
+  @media (min-width: 801px) and (max-width: 1024px) {
+  }
+
+   /* small tablet screen size */
+  @media (min-width: 601px) and (max-width: 800px) {
+  }
+
+  /* mobile screen size */
+  @media (min-width: 320px) and (max-width: 600px) {
+
+  }
+
+  /* medium size mobile */
+  @media (min-width: 481px) and (max-width: 600px) {
+  }
+
+  /* small size mobile */
+  @media (min-width: 320px) and (max-width: 480px) {
+  }
